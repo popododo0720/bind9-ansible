@@ -1,0 +1,4 @@
+all:
+  hosts:
+    dns1:
+      ansible_host: 192.168.0.227

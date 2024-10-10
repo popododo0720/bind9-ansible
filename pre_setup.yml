@@ -1,0 +1,44 @@
+- name: Update APT package index
+  apt:
+    update_cache: yes
+
+- name: Install Podman
+  apt:
+    name: podman
+    state: present
+
+- name: Ensure multiple directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /bind9/etc
+    - /bind9/cache
+    - /bind9/lib
+    - /bind9/log
+    - /ansible
+
+- name: Copy Dockerfile and configuration files from source
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - { src: '/ansible/Dockerfile', dest: '/ansible/Dockerfile' }
+    - { src: '/ansible/named.conf', dest: '/bind9/etc/named.conf' }
+    - { src: '/ansible/db.example.com', dest: '/bind9/etc/db.example.com' }
+    - { src: '/ansible/rndc.key', dest: '/bind9/etc/rndc.key' }
+    - { src: '/ansible/rndc.conf', dest: '/bind9/etc/rndc.conf' }
+
+- name: Build BIND9 image
+  containers.podman.podman_image:
+    name: localhost/bind9-image-ansible
+    path: /ansible
+
+- name: Stop and disable systemd-resolved
+  systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: no

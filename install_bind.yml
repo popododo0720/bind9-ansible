@@ -1,0 +1,17 @@
+---
+- name: Run BIND9 container
+  command: >
+      podman run
+      --name=bind9
+      --restart=always
+      --publish 53:53/udp
+      --publish 53:53/tcp
+      --publish 127.0.0.1:953:953/tcp
+      --volume /bind9/etc:/etc/bind
+      --volume /bind9/cache:/var/cache/bind
+      --volume /bind9/lib:/var/lib/bind
+      --volume /bind9/log:/var/log
+      -d
+      bind9-image-ansible
+  args:
+    creates: /var/lib/containers/storage/overlay-containers/bind9

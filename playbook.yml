@@ -1,0 +1,12 @@
+---
+- name: Pre-setup
+  hosts: dns1
+  become: true
+  tasks:
+    - include_tasks: pre_setup.yml
+
+- name: Install BIND9
+  hosts: dns1
+  become: true
+  tasks:
+    - include_tasks: install_bind.yml
