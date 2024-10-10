@@ -12,6 +12,6 @@
       --volume /bind9/lib:/var/lib/bind
       --volume /bind9/log:/var/log
       -d
-      bind9-image-ansible
+      bind9
   args:
     creates: /var/lib/containers/storage/overlay-containers/bind9

@@ -16,6 +16,7 @@
     - /bind9/cache
     - /bind9/lib
     - /bind9/log
+    - /bind9/etc/db
     - /ansible
 
 - name: Copy Dockerfile and configuration files from source
@@ -28,13 +29,15 @@
   loop:
     - { src: '/ansible/Dockerfile', dest: '/ansible/Dockerfile' }
     - { src: '/ansible/named.conf', dest: '/bind9/etc/named.conf' }
-    - { src: '/ansible/db.example.com', dest: '/bind9/etc/db.example.com' }
+    - { src: '/ansible/zones.conf', dest: '/bind9/etc/zones.conf' }
+    - { src: '/ansible/db/example.com', dest: '/bind9/etc/db/example.com' }
     - { src: '/ansible/rndc.key', dest: '/bind9/etc/rndc.key' }
     - { src: '/ansible/rndc.conf', dest: '/bind9/etc/rndc.conf' }
+    
 
 - name: Build BIND9 image
   containers.podman.podman_image:
-    name: localhost/bind9-image-ansible
+    name: localhost/bind9
     path: /ansible
 
 - name: Stop and disable systemd-resolved
